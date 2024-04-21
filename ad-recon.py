@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # External dependcies 
 from neo4j import GraphDatabase
-import time, sys, argparse
+import time, sys, argparse, os
 
 # Internal Modules
 from modules import query, dump, help
@@ -95,8 +95,14 @@ if __name__ == "__main__":
         dump.dumpQuery()
         sys.exit(0)
 
+    # Check if the output dir exists, and if not create it    
+    if not os.path.exists("output"):
+        os.mkdir("output")
+
     # Connect to the database prior to executing queries
     driver = db_connect()
+
+    # Check if the output dir exists, and if not create it
 
     # Runs the default list of queries
     default_queries(driver)
