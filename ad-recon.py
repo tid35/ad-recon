@@ -10,8 +10,7 @@ from modules import query, dump, help
 ################################
 # Define for target environment#
 ################################
-#URI = "neo4j://localhost:7687"
-URI = "neo4j://192.168.85.134:7687"
+URI = "neo4j://localhost:7687"
 AUTH = ("neo4j", "password")
 ################################
 
