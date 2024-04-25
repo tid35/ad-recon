@@ -102,3 +102,5 @@ Andrew McNicol / tides
     * Initial Release
 * 0.2
     * Added in --transitive and --morehelp switches
+* 0.3
+    * Corrected driver calls to avoid duplicate drivers
