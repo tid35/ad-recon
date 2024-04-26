@@ -83,15 +83,12 @@ There are also several other auxiliary scripts you can run standalone:
 1. Make sure Neo4j is running + has data `neo4j start`
 2. Make sure you modified the script to have the right `user`, `password`, and `host` variables set for your environment
 
-Also feel free to reach out to me.
-
-~Tides
 
 
 ## Authors
 
 Andrew McNicol / tides
-
+Luke Hudson / 3z57uff
 
 ## Version History
 
