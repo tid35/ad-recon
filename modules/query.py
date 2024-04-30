@@ -133,8 +133,13 @@ def get_daSessions(driver):
     for record in result:
         if record["u.name"]:
             user_name=record["u.name"]
-            computer_name=record["c.name"]
-            das_file.write("[*] Computer: "+computer_name+" has Domain Admin Session: "+user_name+"\n")
+            if record["c.name"]:
+                computer_name=record["c.name"]
+            else:
+                computer_name="NULL"
+
+            das_file.write("[*] Computer: "+str(computer_name)+" has Domain Admin Session: "+user_name+"\n")
+
     das_file.close()
 
     with open("output/da_sessions.txt", "r") as fp:
@@ -171,7 +176,10 @@ def get_sessions(driver):
             user_name=record["u.name"]
         else:
             user_name = "NULL"
-        computer_name=record["c.name"]
+        if record["c.name"]:
+            computer_name=record["c.name"]
+        else:
+            computer_name="NULL"
         session_file.write("[*] Computer: "+computer_name+" has session from user: "+user_name+"\n")
     session_file.close()
 
