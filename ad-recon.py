@@ -11,10 +11,12 @@ from modules import query, dump, help
 # Define for target environment#
 ################################
 URI = "neo4j://localhost:7687"
-AUTH = ("neo4j", "password")
+USERNAME = "neo4j"
+PASSWORD = "password"
+#AUTH = (USERNAME, PASSWORD)
 ################################
 
-def db_connect():
+def db_connect(URI, AUTH):
     with GraphDatabase.driver(URI, auth=AUTH) as driver:
         driver.verify_connectivity()
         return driver
@@ -76,22 +78,30 @@ if __name__ == "__main__":
                     description='Quickly triage BloodHound data via Neo4j queries',
                     epilog='ad-recon --pathing (optional) --dump (optional) --transitive (optional)')
 
-    parser.add_argument('--pathing', help='Run pathing queries - takes longer', required=False, action='store_true')
-    parser.add_argument('--transitive', help='Run transitive queries - takes even longer', required=False, action='store_true')  
-    parser.add_argument('--dump', help='Dumps raw Cypher queries to more easily modify and use in BH/Neo4j. If selected no queries are performed', required=False, action='store_true')
-    parser.add_argument('--morehelp', help='Provides context into how to analyze the output files', required=False, action='store_true')
+    parser.add_argument('-P', '--pathing', help='Run pathing queries - takes longer', required=False, action='store_true')
+    parser.add_argument('-T', '--transitive', help='Run transitive queries - takes even longer', required=False, action='store_true')  
+    parser.add_argument('-D', '--dump', help='Dumps raw Cypher queries to more easily modify and use in BH/Neo4j. If selected no queries are performed', required=False, action='store_true')
+    parser.add_argument('-H', '--moreHelp', help='Provides context into how to analyze the output files', required=False, action='store_true')
+    parser.add_argument('-L', '--listQueries', help='List available queries', required=False, action='store_true')
+    parser.add_argument('-Q', '--query', type=str, help="Executes an individual query as listed by -L (--listQueries)", required=False)
+    parser.add_argument('-U', '--uri', type=str, help="Neo4j URI. Format neo4j://<ip>:<port>. Defaults to neo4j://localhost:7487", required=False)
+    parser.add_argument('-u', '--username', type=str, help="Username for neo4j authentication", required=False)
+    parser.add_argument('-p', '--password', type=str, help="Password for neo4j authentication", required=False)
     args = vars(parser.parse_args())
 
     # Track initial start time
     st = time.time()
 
     # Execute moreHelp query for verbose help info
-    if args['morehelp'] == True:
+    if args['moreHelp'] == True:
         help.moreHelp()
         sys.exit(0)
-
+    # List available queries
+    elif args['listQueries'] == True:
+        help.listQueries()
+        sys.exit(0)
     # Dumps list of queries
-    if args['dump'] == True:
+    elif args['dump'] == True:
         dump.dumpQuery()
         sys.exit(0)
 
@@ -100,12 +110,33 @@ if __name__ == "__main__":
         os.mkdir("output")
 
     # Connect to the database prior to executing queries
-    driver = db_connect()
+    if args['uri']:
+        URI = args['uri']
+        print(f"Using {URI}")
+    if args['username']:
+        USERNAME = args['username']
+    if args['password']:
+        PASSWORD = args['password']
 
-    # Check if the output dir exists, and if not create it
+    # Setup driver connection
+    AUTH = (USERNAME, PASSWORD)
+    driver = db_connect(URI, AUTH)
 
-    # Runs the default list of queries
-    default_queries(driver)
+    # If a single query is defined, execute, otherwise run the default queries
+    if args['query']:
+        queries = help.getQueries()
+        singleQuery = args['query']
+        
+        if singleQuery in queries:
+            q = getattr(query, singleQuery)
+            q(driver)
+        else:
+            print("Invalid query!")
+            help.listQueries()
+        sys.exit(0)
+    else:
+        # Runs the default list of queries
+        default_queries(driver)
 
     # Executes pathing queries if the arg is passed
     if args['pathing'] == True:

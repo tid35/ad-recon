@@ -1,6 +1,7 @@
-from neo4j import GraphDatabase, RoutingControl
+from neo4j import RoutingControl
 from termcolor import colored
 import itertools, sys
+
 
 def do_query(driver, query):
     records, _, _ = driver.execute_query(

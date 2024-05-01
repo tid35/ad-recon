@@ -1,5 +1,22 @@
 from termcolor import colored
 
+def getQueries():
+    from modules import query
+    import inspect
+    
+    queries = []
+
+    for f in inspect.getmembers(query, inspect.isfunction):
+        if f[0].startswith('get_'):
+            #print(f[0])
+            queries.append(f[0])
+    return queries
+
+def listQueries():
+    queries = getQueries()
+    for i in queries:
+        print(i)
+
 def moreHelp():
     queries = '''
 [+] Generating List of Domain Admin Sessions
