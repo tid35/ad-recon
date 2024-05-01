@@ -2,11 +2,14 @@ from neo4j import RoutingControl
 from termcolor import colored
 import itertools, sys
 
+# Import config variables
+from ad_recon import DATABASE
 
 def do_query(driver, query):
     records, _, _ = driver.execute_query(
         query,
-        database_="neo4j", 
+        #database_="neo4j", 
+        database = DATABASE,
         routing_=RoutingControl.READ,
     )
     return records

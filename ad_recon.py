@@ -13,7 +13,7 @@ from modules import query, dump, help
 URI = "neo4j://localhost:7687"
 USERNAME = "neo4j"
 PASSWORD = "password"
-#AUTH = (USERNAME, PASSWORD)
+DATABASE = "neo4j"
 ################################
 
 def db_connect(URI, AUTH):
@@ -87,6 +87,7 @@ if __name__ == "__main__":
     parser.add_argument('-U', '--uri', type=str, help="Neo4j URI. Format neo4j://<ip>:<port>. Defaults to neo4j://localhost:7487", required=False)
     parser.add_argument('-u', '--username', type=str, help="Username for neo4j authentication", required=False)
     parser.add_argument('-p', '--password', type=str, help="Password for neo4j authentication", required=False)
+    parser.add_argument('-d', "--database", type=str, help="Neo4j database name for queries", required=False)
     args = vars(parser.parse_args())
 
     # Track initial start time
@@ -117,6 +118,8 @@ if __name__ == "__main__":
         USERNAME = args['username']
     if args['password']:
         PASSWORD = args['password']
+    if args['database']:
+        DATABASE = args['database']
 
     # Setup driver connection
     AUTH = (USERNAME, PASSWORD)
