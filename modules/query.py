@@ -65,10 +65,10 @@ def get_sessionCount(driver):
 # Query to print number of Users
 # MATCH (u:User) return count(u)
 def get_users(driver):
-    result = do_query(driver, "MATCH (u:User) return count(u)")
+    result = do_query(driver, "MATCH (u:User) return count(u.name)")
     for record in result:
-        if record["count(u)"]:
-            count=record["count(u)"]
+        if record["count(u.name)"]:
+            count=record["count(u.name)"]
         else:
             count="0"
 
@@ -582,11 +582,11 @@ def get_userNoLogon(driver):
         entries = str(len(fp.readlines())) 
     print("[+] Generating Enabled Users who have never logged on: enabledacct_never_loggedon.txt ("+entries+") lines")
 
-
+# MATCH p = (d:Domain)-[r:Contains*1..]->(c:Computer) WHERE c.haslaps = false AND c.enabled = true AND c.operatingsystem CONTAINS "Win" RETURN c.name, c.description, c.operatingsystem
 # Query to get computers with LAPS disabled: computers_laps_disabled.txt
 # MATCH p = (d:Domain)-[r:Contains*1..]->(c:Computer) WHERE c.haslaps = false AND c.enabled = true RETURN c.name, c.description
 def get_computersNoLAPS(driver):
-    result = do_query(driver, "MATCH p = (d:Domain)-[r:Contains*1..]->(u:Computer) WHERE u.haslaps = false AND u.enabled = true RETURN u.name, u.description")
+    result = do_query(driver, "MATCH p = (d:Domain)-[r:Contains*1..]->(u:Computer) WHERE u.haslaps = false AND u.enabled = true AND u.operatingsystem CONTAINS 'Win' RETURN u.name, u.operatingsystem, u.description")
     comp_file=open("output/computers_laps_disabled.txt", "w")
     for record in result:
         if record["u.name"]:
