@@ -1,5 +1,6 @@
 # output files from ad-recon
 output/*
+*/*.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
