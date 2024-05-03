@@ -850,6 +850,28 @@ def get_userOutboundRights_trans(driver):
     print("[+] Generating a List of Users with Transitive Outbound Rights: users_outbound_trans_rights.txt ("+entries+") lines")
 
 
+
+
+def get_userinboundRights_trans(driver):
+    result = do_query(driver, "MATCH (m:User) return m.name, m.objectid")
+    user_inbound_file=open(config['bloodhound']['OUTPUT_DIR'] + "/users_inbound_trans_rights.txt", "w")
+    for record in result:
+        if record["m.name"]:
+            username = record["m.name"]
+            objectid = record["m.objectid"]
+            result1 = do_query(driver, "MATCH (n) WHERE NOT n.objectid='"+objectid+"' MATCH p = shortestPath((n)-[r1:MemberOf|AddSelf|WriteSPN|AddKeyCredentialLink|AllExtendedRights|ForceChangePassword|GenericAll|GenericWrite|WriteDacl|WriteOwner*1..]->(u1:User {objectid: '"+objectid+"'})) RETURN count(p)")
+            for record1 in result1:
+                if record1["count(p)"]:
+                    trans_rights=str(record1["count(p)"])
+                    user_inbound_file.write("[-] User: "+username+" Transitive Inbound Rights: "+trans_rights+"\n")
+    user_inbound_file.close()
+
+    with open(config['bloodhound']['OUTPUT_DIR'] + "/users_inbound_trans_rights.txt", "r") as fp:
+        entries = str(len(fp.readlines()))
+    print("[+] Generating a List of Users with Transitive Inbound Rights: users_inbound_trans_rights.txt ("+entries+") lines")
+
+
+
 def get_computerOutboundRights_trans(driver):
     result = do_query(driver, "MATCH (m:Computer) return m.name, m.objectid")
     comp_outbound_file=open(config['bloodhound']['OUTPUT_DIR'] + "/comp_outbound_trans_rights.txt", "w")
