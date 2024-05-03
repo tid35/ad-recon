@@ -31,3 +31,6 @@ def default_queries(driver):
     query.get_userNoLogon(driver)
     query.get_computersNoLAPS(driver)
     query.get_oldComps(driver)
+    query.get_firstDegreeUserDCOM(driver)
+    query.get_groupDelUserDCOM(driver)
+    query.get_firstDegreeGroupDCOM(driver)

@@ -615,6 +615,72 @@ def get_computersNoLAPS(driver):
     print("[+] Generating Computers with LAPS Disabled: computers_laps_disabled.txt ("+entries+") lines")
 
 
+
+# Get 1st degree DCOM Privs
+# MATCH p=(m:User {objectid: "OBJECT_ID"})-[r:ExecuteDCOM]->(n:Computer) RETURN p
+def get_firstDegreeUserDCOM(driver):
+    result = do_query(driver, "MATCH (m:User) where m.name is not null return m.name, m.objectid")
+    dcom_file=open(config['bloodhound']['OUTPUT_DIR'] + "/firstdegree_user_dcom_rights.txt", "w")
+    for record in result:
+        if record["m.name"]:
+            user_name = record["m.name"]
+            objectid = record["m.objectid"]
+            result1 = do_query(driver, "MATCH p=(m:User {objectid: '"+objectid+"'})-[r:ExecuteDCOM]->(n:Computer) RETURN count(p)")
+            for record1 in result1:
+                if record1["count(p)"]:
+                    dcom_rights=str(record1["count(p)"])
+                    dcom_file.write("[-] User: "+user_name+" DCOM rights: "+dcom_rights+"\n")
+    dcom_file.close()
+
+    with open(config['bloodhound']['OUTPUT_DIR'] + "/firstdegree_user_dcom_rights.txt", "r") as fp:
+        entries = str(len(fp.readlines()))
+    print("[+] Generating list of Users first degree DCOM rights: firstdegree_user_dcom_rights.txt ("+entries+") lines")
+
+
+# Get group delegated DCOM Privs
+# MATCH p=(m:User {objectid: "S-1-5-21-3031697400-3124200660-2978427-16364"})-[r1:MemberOf*1..]->(g:Group)-[r2:ExecuteDCOM]->(n:Computer) RETURN p
+def get_groupDelUserDCOM(driver):
+    result = do_query(driver, "MATCH (m:User) where m.name is not null return m.name, m.objectid")
+    dcom_file=open(config['bloodhound']['OUTPUT_DIR'] + "/groupdel_user_dcom_rights.txt", "w")
+    for record in result:
+        if record["m.name"]:
+            user_name = record["m.name"]
+            objectid = record["m.objectid"]
+            result1 = do_query(driver, "MATCH p=(m:User {objectid: '"+objectid+"'})-[r1:MemberOf*1..]->(g:Group)-[r2:ExecuteDCOM]->(n:Computer) RETURN count(p)")
+            for record1 in result1:
+                if record1["count(p)"]:
+                    dcom_rights=str(record1["count(p)"])
+                    dcom_file.write("[-] User: "+user_name+" group del DCOM rights: "+dcom_rights+"\n")
+    dcom_file.close()
+
+    with open(config['bloodhound']['OUTPUT_DIR'] + "/groupdel_user_dcom_rights.txt", "r") as fp:
+        entries = str(len(fp.readlines()))
+    print("[+] Generating list of Users group delegated DCOM rights: groupdel_user_dcom_rights.txt ("+entries+") lines")
+
+
+# Get 1st degree Group DCOM Privs
+# MATCH p=(m:Group {objectid: "OBJECT_ID"})-[r:ExecuteDCOM]->(n:Computer) RETURN p
+def get_firstDegreeGroupDCOM(driver):
+    result = do_query(driver, "MATCH (m:Group) where m.name is not null return m.name, m.objectid")
+    dcom_file=open(config['bloodhound']['OUTPUT_DIR'] + "/firstdegree_group_dcom_rights.txt", "w")
+    for record in result:
+        if record["m.name"]:
+            user_name = record["m.name"]
+            objectid = record["m.objectid"]
+            result1 = do_query(driver, "MATCH p=(m:Group {objectid: '"+objectid+"'})-[r:ExecuteDCOM]->(n:Computer) RETURN count(p)")
+            for record1 in result1:
+                if record1["count(p)"]:
+                    dcom_rights=str(record1["count(p)"])
+                    dcom_file.write("[-] Group: "+user_name+" DCOM rights: "+dcom_rights+"\n")
+    dcom_file.close()
+
+    with open(config['bloodhound']['OUTPUT_DIR'] + "/firstdegree_group_dcom_rights.txt", "r") as fp:
+        entries = str(len(fp.readlines()))
+    print("[+] Generating list of Groups first degree DCOM rights: firstdegree_group_dcom_rights.txt ("+entries+") lines")
+
+
+
+
 ### This function is only invoked if `--pathing` is selected on the CLI due to the time it takes to run
 # Build a list of High Value Targets (HVTs) in Q1, and then interate through their inbound rights in Q2 (this is the one that takes a bit)
 # Q1 - MATCH (m) WHERE m.highvalue=TRUE RETURN m.name, m.objectid
