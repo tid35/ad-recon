@@ -1114,7 +1114,7 @@ def get_adminCountFalseUsers_trans(driver):
     print("[+] Generating a List of Users with AdminCount=False Transitive Outbound Rights: admincount_false_user_outbound_trans_rights.txt ("+str(entries)+") lines")
 
 
-
+# lists users with Global Administrator role
 def get_azureUsersGlobalAdmin(driver):
     result = do_query(driver, "MATCH p =(n)-[r:AZGlobalAdmin*1..]->(m) RETURN p, n.name, n.objectid")
     azure_global_admin_file = open(config['bloodhound']['OUTPUT_DIR'] + "/azure_global_admins.txt", "w")
@@ -1125,3 +1125,13 @@ def get_azureUsersGlobalAdmin(driver):
     azure_global_admin_file.close()
     print(f"[+] Generating list of Azure users with Global Administrator role: {azure_global_admin_file.name} ({len(result)}) lines")
 
+# gets a list of azure users 
+def get_azureUsers(driver):
+    result = do_query(driver, "MATCH (n:AZUser) return count(n)")
+    for record in result:
+        print(f"Number of Azure Users: {record['count(n)']}")
+
+def get_azureDevices(driver):
+    result = do_query(driver, "MATCH (n:AZDevice) return count(n)")
+    for record in result:
+        print(f"Number of Azure Devcies: {record['count(n)']}")

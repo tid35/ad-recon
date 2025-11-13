@@ -4,7 +4,7 @@ import time, sys, argparse, os
 from neo4j import GraphDatabase
 
 # Internal Modules
-from modules import settings, db, default, dump, help, pathing, query, transitive, hvt, owned, adminCount
+from modules import settings, db, default, dump, help, pathing, query, transitive, hvt, owned, adminCount, azure
 
 if __name__ == "__main__":
     # Setup arguments
@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
     parser.add_argument('-P', '--pathing', help='Run pathing queries - takes longer', required=False, action='store_true')
     parser.add_argument('-T', '--transitive', help='Run transitive queries - takes even longer', required=False, action='store_true')  
+    parser.add_argument('-A', '--azure', help='Run azure queries', required=False, action='store_true')  
     parser.add_argument("--hvt", help="Run High Value Target (HVT) Queries", required=False, action='store_true')
     parser.add_argument("--owned", help="Get owned users outbound transitive rights", required=False, action='store_true')
     parser.add_argument("--adminCount", help="Get AdminCount False Users Outbound Transitive Rights", required=False, action='store_true')
@@ -103,6 +104,10 @@ if __name__ == "__main__":
     # Executes transitive queries if the arg is passed
     if args['transitive'] == True:
         transitive.transitive_queries(driver)
+
+    # Executes azure queries if the arg is passed
+    if args['azure'] == True:
+        azure.azure_queries(driver)
 
     # Executes HVT queries if arg is passed
     if args['hvt'] == True:
