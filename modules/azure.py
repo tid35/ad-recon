@@ -6,4 +6,6 @@ def azure_queries(driver):
     print("----")
     query.get_azureUsers(driver)
     query.get_azureDevices(driver)
+    query.get_azureApps(driver)
     query.get_azureUsersGlobalAdmin(driver)
+    query.get_azureUsersContributors(driver)

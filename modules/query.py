@@ -1123,7 +1123,7 @@ def get_azureUsersGlobalAdmin(driver):
             username = record["n.name"]
             azure_global_admin_file.write(f"[-] User: {username}\n")
     azure_global_admin_file.close()
-    print(f"[+] Generating list of Azure users with Global Administrator role: {azure_global_admin_file.name} ({len(result)}) lines")
+    print(f"[+] Generating Azure users with Global Administrator role: {azure_global_admin_file.name} ({len(result)}) lines")
 
 # gets a list of azure users 
 def get_azureUsers(driver):
@@ -1135,3 +1135,19 @@ def get_azureDevices(driver):
     result = do_query(driver, "MATCH (n:AZDevice) return count(n)")
     for record in result:
         print(f"Number of Azure Devcies: {record['count(n)']}")
+
+def get_azureApps(driver):
+    result = do_query(driver, "MATCH (n:AZApp) return count(n)")
+    for record in result:
+        print(f"Number of Azure Apps: {record['count(n)']}")
+
+# Gets list of users with the Contributor (manage or create azure assets) role
+def get_azureUsersContributor(driver):
+    result = do_query(driver, "MATCH p = (n)-[r:AZContributor]->(g) RETURN p, n.name")
+    azure_contributor_file = open(config['bloodhound']['OUTPUT_DIR'] + "/azure_contributors.txt", "w")
+    for record in result:
+        if record["n.name"]:
+            username = record["n.name"]
+            azure_contributor_file.write(f"[-] User: {username}\n")
+    azure_contributor_file.close()
+    print(f"[+] Generating Azure users with Contributor role: {azure_contributor_file.name} ({len(result)}) lines")
