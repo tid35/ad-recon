@@ -7,5 +7,7 @@ def azure_queries(driver):
     query.get_azureUsers(driver)
     query.get_azureDevices(driver)
     query.get_azureApps(driver)
+    query.get_azureGroups(driver)
+    query.get_azureKeyVaults(driver)
     query.get_azureUsersGlobalAdmin(driver)
-    query.get_azureUsersContributors(driver)
+    query.get_azureUsersContributor(driver)

@@ -1141,6 +1141,19 @@ def get_azureApps(driver):
     for record in result:
         print(f"Number of Azure Apps: {record['count(n)']}")
 
+def get_azureGroups(driver):
+    result = do_query(driver, "MATCH (n:AZGroup) return count(n)")
+    for record in result:
+        print(f"Nubmer of Azure Groups: {record['count(n)']}")
+
+def get_azureKeyVaults(driver):
+    result = do_query(driver, "MATCH (n:AZKeyVault) return n.name")
+    for record in result:
+        print(record['n.name'])
+    print(f"Number of Azure Key Vaults: {len(result)}")
+
+
+
 # Gets list of users with the Contributor (manage or create azure assets) role
 def get_azureUsersContributor(driver):
     result = do_query(driver, "MATCH p = (n)-[r:AZContributor]->(g) RETURN p, n.name")
@@ -1151,3 +1164,17 @@ def get_azureUsersContributor(driver):
             azure_contributor_file.write(f"[-] User: {username}\n")
     azure_contributor_file.close()
     print(f"[+] Generating Azure users with Contributor role: {azure_contributor_file.name} ({len(result)}) lines")
+
+# Need to test further with dif data set 
+def get_onPremUserAzureEdges(driver):
+    result = do_query(driver, "MATCH  p=(m:User)-[r:AZResetPassword|AZOwns|AZUserAccessAdministrator|AZContributor|AZAddMembers|AZGlobalAdmin|AZVMContributor|AZOwnsAZAvereContributor]->(n) WHERE m.objectid CONTAINS 'S-1-5-21' RETURN p")
+    print(result)
+
+def get_azureVmPaths(driver):
+    result = do_query(driver, "MATCH p = (n) - [r] ->(g:AZVM) RETURN p")
+    print(result)
+
+def get_azureKeyVaultPath(driver):
+    return
+
+
