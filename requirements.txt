@@ -1,2 +1,5 @@
-neo4j==5.19.0
+neo4j==6.0.2
+neo4j-rust-ext==6.0.2.0
+pytz==2025.2
 termcolor==2.4.0
+toml==0.10.2
