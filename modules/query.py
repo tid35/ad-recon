@@ -22,24 +22,30 @@ def do_query(driver, query):
 def get_DCs(driver):
     result = do_query(driver, "MATCH (c1:Computer)-[:MemberOf*1..]->(g:Group) WHERE g.objectid ENDS WITH '-516' return c1.name")
     print("Domain Controllers: ")
+    dcs = []
     for record in result:
         print(record["c1.name"])
+        dcs.append(record["c1.name"])
     print("-----")
+    return dcs
 
 
 # Query to parse out Domains
 # MATCH (n:Domain) RETURN n.name
 def get_domains(driver):
     result = do_query(driver, "MATCH (n:Domain) RETURN n.name")
-    
+
+    domains = []
     print("Domains Found: ")
     for record in result:
         if record['n.name']:
             print(record["n.name"])
+            domains.append(record["n.name"])
         else:
             print("No Domain Detected please check to ensure database setup properly and data imported")
             sys.exit(0)
     print("-----")
+    return domains
 
 # Query to get number of total computers
 # MATCH (u:Computer) return count(u)
@@ -52,6 +58,7 @@ def get_computers(driver):
             count = 0
     if len(str(count)) > 1:
         print("Number of Computers: "+str(count))
+    return count
 
 # Query to print number of sessions
 # MATCH (c:Computer)-[:HasSession]->(u:User) return count(c)
@@ -67,6 +74,7 @@ def get_sessionCount(driver):
         print("Number of Sessions: "+str(count)+" Session data is low consider session looping")
     else:
         print("Number of Sessions: "+str(count))
+    return int(count)
 
 # Query to print number of Users
 # MATCH (u:User) return count(u)
@@ -79,6 +87,7 @@ def get_users(driver):
             count="0"
 
     print("Number of Users: "+str(count))
+    return int(count)
 
 
 # Query to print number of Enabled Users
@@ -92,6 +101,7 @@ def get_Enabledusers(driver):
             count="0"
 
     print("Number of Enabled Users: "+str(count))
+    return int(count)
 
 
 # Print number of owned users:
@@ -104,6 +114,7 @@ def get_ownedUsersCount(driver):
         else:
             count="0"
     print("Number of Owned Users: "+str(count))
+    return int(count)
 
 
 # Getting DAs:

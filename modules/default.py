@@ -2,13 +2,14 @@ from modules import query
 import time
 
 def default_queries(driver):
-    query.get_domains(driver)
-    query.get_DCs(driver)
-    query.get_computers(driver)
-    query.get_sessionCount(driver)
-    query.get_users(driver)
-    query.get_Enabledusers(driver)
-    query.get_ownedUsersCount(driver)
+    report_data = {}
+    report_data['domains'] = query.get_domains(driver)
+    report_data['dcs'] = query.get_DCs(driver)
+    report_data['computers'] = query.get_computers(driver)
+    report_data['sessions'] = query.get_sessionCount(driver)
+    report_data['users'] = query.get_users(driver)
+    report_data['enabled_users'] = query.get_Enabledusers(driver)
+    report_data['owned_users'] = query.get_ownedUsersCount(driver)
     query.get_ownedUsers(driver)
     query.get_daSessions(driver)
     query.get_sessions(driver)
@@ -32,7 +33,7 @@ def default_queries(driver):
     query.get_userNoLogon(driver)
     query.get_computersNoLAPS(driver)
     query.get_oldComps(driver)
-    #query.get_firstDegreeUserDCOM(driver) # NEED TO MOVE TO DCOM MODULE 
+    #query.get_firstDegreeUserDCOM(driver) # NEED TO MOVE TO DCOM MODULE
     #query.get_groupDelUserDCOM(driver)
     #query.get_firstDegreeGroupDCOM(driver)
     query.get_passNeverExpire(driver)
@@ -40,3 +41,4 @@ def default_queries(driver):
     query.get_passNotRequired(driver)
     query.get_allowedToAct(driver)
     query.get_writeAccountRestrictions(driver)
+    return report_data

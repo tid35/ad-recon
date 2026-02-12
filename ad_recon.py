@@ -4,7 +4,7 @@ import time, sys, argparse, os
 from neo4j import GraphDatabase
 
 # Internal Modules
-from modules import settings, db, default, dump, help, pathing, query, transitive, hvt, owned, adminCount
+from modules import settings, db, default, dump, help, pathing, query, transitive, hvt, owned, adminCount, report
 
 if __name__ == "__main__":
     # Setup arguments
@@ -26,6 +26,7 @@ if __name__ == "__main__":
     parser.add_argument('-u', '--username', type=str, help="Username for neo4j authentication", required=False)
     parser.add_argument('-p', '--password', type=str, help="Password for neo4j authentication", required=False)
     parser.add_argument('-d', "--database", type=str, help="Neo4j database name for queries", required=False)
+    parser.add_argument('-R', '--report', help='Generate an HTML report after queries complete', required=False, action='store_true')
     parser.add_argument('-O', "--output", type=str, help="Specify an output directory for generated files", required=False)
     args = vars(parser.parse_args())
 
@@ -94,7 +95,7 @@ if __name__ == "__main__":
         sys.exit(0)
     else:
         # Runs the default list of queries
-        default.default_queries(driver)
+        report_data = default.default_queries(driver)
 
     # Executes pathing queries if the arg is passed
     if args['pathing'] == True:
@@ -116,6 +117,10 @@ if __name__ == "__main__":
     if args['adminCount'] == True:
         adminCount.adminCount_queries(driver)
     
+    # Generate HTML report if --report flag is set
+    if args['report'] == True:
+        report.generate_report(config['bloodhound']['OUTPUT_DIR'], report_data)
+
     # Close driver connection
     driver.close()
 
